@@ -1,0 +1,94 @@
+<tool id="2pg" name="2PG" version="1.0.0">
+  <description>Execution of 2PG Framework</description>
+  <command interpreter="python">
+#if $source_pop.select_pop == "randon"
+  #set $tipo_pop = 0 
+  #set $pop_input = ""
+#else 
+  #set $tipo_pop = 1
+  #set $pop_input = $source_pop.input_pop
+#end if
+
+#if $source_fasta.source_select == "database"        
+    2pg.py $NumberGeration
+$SizePopulation
+$NumberIndividualReproduce
+$CrossoverRate
+$MutationRate
+$Individual_Mutation_Rate
+$blx_alfa
+$max_mutation_range
+$BLX_cros_Rate
+$point_cros_Rate
+$Fitness_Energy
+$Weights_Fitness
+$source_fasta.input_text $output_fasta $email $__user_email__ 0 $tipo_pop $pop_input
+#else 
+2pg.py $NumberGeration
+$SizePopulation
+$NumberIndividualReproduce
+$CrossoverRate
+$MutationRate
+$Individual_Mutation_Rate
+$blx_alfa
+$max_mutation_range
+$BLX_cros_Rate
+$point_cros_Rate
+$Fitness_Energy
+$Weights_Fitness
+$source_fasta.input_target $output_fasta $email $__user_email__ 1 $tipo_pop $pop_input
+#end if
+  </command>
+  <inputs>    
+    <conditional name="source_fasta">
+       <param name="source_select" type="select" label="Source of the aminoacids sequence">
+	   <option value="input_ref">An upload file</option>
+           <option value="database">Own Sequence</option>           
+       </param>
+       <when value="database">
+           <param name="input_text" type="text" optional="false"  area="true" size="5x35" label="Your own aminoacids sequence" />
+       </when>
+       <when value="input_ref">
+           <param name="input_target" type="data" format="fasta" label="Fasta File" />
+        </when>
+    </conditional>
+    <conditional name="source_pop">
+       <param name="select_pop" type="select" label="Initial Population">
+	   <option value="randon">Random</option>
+           <option value="own_sequence">Own Sequence</option>           
+       </param>       
+       <when value="own_sequence">
+           <param name="input_pop" type="data" format="txt" label="Pop File" />
+       </when>	
+    </conditional>    
+    <!--<param name="input" type="data" format="fasta" label="Arquivo Fasta"/>-->
+    <param name="NumberGeration" label="Number of Generation" type="integer" value="" help="Número de Gerações"/>
+    <param name="SizePopulation" label="Size of Population" type="integer" value="" help="Tamanho da População"/>
+    <param name="NumberIndividualReproduce" label="Number of Individual Reproduce" type="integer" value="" help="Número de Reprodução Individual"/> 
+    <param name="CrossoverRate" label="Rate of Crossover" type="float" value="" help="Taxa de Crossover"/>
+    <param name="MutationRate" label="Rate of Mutation" type="float" value="" help="Taxa de Mutação"/>
+    <param name="Individual_Mutation_Rate" label="Rate of Individual Mutation" type="float" value="" help="Taxa de Mutação Individual"/>
+    <param name="blx_alfa" label="??? Blx Alfa" type="float" value="" help="..."/>
+    <param name="max_mutation_range" label="Max Range of Mutation" type="float" value="" help="Intervalo Máximo de Mutação"/>
+    <param name="BLX_cros_Rate" label="Rate of Blx Crossover" type="integer" value="" help="..."/>
+    <param name="point_cros_Rate" label="Rate of Point Cros" type="float" value="" help="..."/>
+    <param name="Weights_Fitness" label="Weight of Fitness" type="float" value="" help="Weights of Fitness"/>
+    <param name="Fitness_Energy" type="select" label="Fitness Energy">
+	<option value="Van_der_Waals">Van der Waals</option>
+        <option value="H_Bond_Side_Main">H Bond Side Main</option>
+        <option value="H_Bond">H Bond</option>
+    </param>    
+    <param name="email" type="text" label="User Email" optional="false" size="30" help="Email address to which the notice will be sent when the run ends"/>
+  </inputs>
+  <outputs>
+    <data name="output_fasta" format="data"/>    
+  </outputs>
+  <help>
+
+**What it does**
+
+Gera parametros para o 2PG.
+
+
+  </help>
+</tool>

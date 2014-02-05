@@ -1,0 +1,67 @@
+<tool id="2pg_analysis" name="2PG_MonoAnalysis" version="1.0.0">
+  <description>Analysis of 2PG Mono Accuracy</description>
+  <command interpreter="python">
+#if $source_fasta.source_select == "database"        
+    2pg_analysis.py $NumberGeration
+$SizePopulation
+$Fitness_Energy
+$source_fasta.input_text $output_fasta $input_pop $email 0
+#else 
+2pg_analysis.py $NumberGeration
+$SizePopulation
+$Fitness_Energy
+$source_fasta.input_target $output_fasta $input_pop $email 1 
+#end if
+  </command>
+  <inputs>    
+    <conditional name="source_fasta">
+       <param name="source_select" type="select" label="Source of the aminoacids sequence" help="You can use a file in your history as an input or you can insert your own aminoacid sequence. Recommended that you use a sequence less than 36 aminoacids.">
+	   <option value="input_ref">An upload file</option>
+           <option value="database">Own Sequence</option>           
+       </param>
+       <when value="database">
+           <param name="input_text" type="text" optional="false"  area="true" size="5x35" label="Your own aminoacids sequence" />
+       </when>
+       <when value="input_ref">
+           <param name="input_target" type="data" format="fasta" label="Sequence File" />
+        </when>
+    </conditional>
+    <param name="input_pop" type="data" format="data" label="Population and Fitness File" help="A zip file containing the .pop and .fit files." />
+    <param name="NumberGeration" label="Number of Generation" type="integer" optional="false" value="1" min="1"/>
+    <param name="SizePopulation" label="Size of Population" type="integer" optional="false" value="20" min="1"/>
+    <param name="Fitness_Energy" type="select" label="Objective">
+	<option value="Potential">Potential</option>
+        <option value="H_Bond_Main">H Bond Main</option>
+        <option value="H_Bond">H Bond</option>
+	<option value="Hydrophobic">Hydrophobic</option>
+	<option value="Hydrophilic">Hydrophilic</option>
+	<option value="Total_Area">Total Area</option>
+	<option value="Gyrate">Gyrate</option>
+	<option value="Stride_helix">Stride Helix</option>
+	<option value="Stride_beta">Stride Beta</option>
+	<option value="Stride_total">Stride Total</option>
+    </param>    
+    <param name="email" type="text" label="User's Email Adress" optional="false" size="30" help="Email address to which the notice will be sent when the run ends"/>
+  </inputs>
+  <outputs>
+    <data name="output_fasta" format="data" label="Analysis.zip"/>    
+  </outputs>
+  <help>
+
+**What it does**
+
+ This tool execute the 2PG Framework, an evolutionary framework for protein structure prediction. At the end of the galaxy's job, the process of 2PG will be started on the server, and it will execute in background. When the process finish, the user's email adress will receive a message that the process has finished and the result of the framework will be available to user download it.
+ The result of this tool is a .zip file with all the .PDB files. However, there is a .PDB file called "Final_PDB.pdb" that represents the best solution founded.  
+
+-----
+
+**Parameters**
+
+Aminoacids Sequence: The framework uses this sequence to predict the protein structure. This sequence can be in a .FASTA file that represents the first protein structure, or can be just the letters that represent the aminoacids of the protein. You must upload the .FASTA file to your history to use it.
+
+Initial Population: The 2PG framework uses an evolutionary algorithm to predict the pretein structure. There are two options to set this parameter, Randon and a user's initial population.
+Randon: With this option, the framework will create a randon initial population.
+User's population: You can upload a .txt file with the initial population that will be used by the framework. You must upload the file to your history to use it.
+
+  </help>
+</tool>

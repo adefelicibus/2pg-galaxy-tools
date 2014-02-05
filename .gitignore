@@ -1,0 +1,7 @@
+Python / uWSGI
+*.pyc
+*.pyo*
+.pip-log.txt
+
+# Galaxy
+galaxy-dist/
