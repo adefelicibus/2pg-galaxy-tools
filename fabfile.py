@@ -22,39 +22,39 @@ env.hosts = [FCFRP_server]
 # ----------------------------------------------------------------------------------------------------
 
 def server():
-    """inicia o servidor do Galaxy local"""
-    log('Iniciando servidor do Galaxy')
+    '''Start the Galaxy local server'''
+    log('Starting the Galaxy local server')
     local('sh galaxy-dist/run.sh --reload')
 
 def update_tool_local(tool_name):
-	"""Atualiza tool no diretório do Galaxy"""
-	log('Atualizando tool no diretorio do Galaxy')
+	'''Update tool at Galaxy path'''
+	log('Updating tool at Galaxy path')
 	if not os.path.exists(tool_path):
 		os.mkdir(tool_path)
-		warn("Criando o diretório raiz das tools")
+		warn("Creating the tools' root path")
 	if not os.path.exists(os.path.join(os.getcwd(), ''.join([tool_name, '.xml']))):
-		abort("Tool não encontrada.")
+		abort("Tool not found.")
 	else:
 		local('cp %s.py %s.xml %s' % (tool_name, tool_name, tool_path))
 
 def remote_pull():
-    """git pull remoto"""
-    log('Atualizando aplicação no servidor')
+    """Execute git pull on server"""
+    log('Update server application')
     with cd(project_path):
         run('git pull origin master')
 
 def update_tool_server(tool_name, server=''):
-	"""Atualiza tool no diretório do Galaxy no servidor"""
-	log('Atualizando tool no diretorio do Galaxy no servidor')
+	'''Update Galaxy path tool on server'''
+	log('Updating Galaxy path tool on server')
 	if not os.path.exists(os.path.join(os.getcwd(), ''.join([tool_name, '.xml']))):
-		abort("Tool não encontrada.")
+		abort("Tool not found.")
 	else:
 		local('scp %s.py %s.xml %s:%s' % (tool_name, tool_name, FCFRP_server, project_path))
 
 def update_all_tools_local():
 	pass
 
-def reintialize_server(server=''):
+def reinitialize_server(server=''):
 	'''Reinitile the remote server'''
 	log('Reinitilizing the remote server')
 	with settings(warn_only=True):
@@ -70,11 +70,10 @@ def create_remote_screen():
 	'''Create a new screen'''
 	log("Creating a new screen.")
 	run('screen -R -S "Galaxy"')
-	#disconnect_all()
 
 def upload_public_key():
-    """faz o upload da chave ssh para o servidor"""
-    log('Adicionando chave publica no servidor')
+    '''Upload the ssh key to server'''
+    log('Uploading the ssh public key to server')
     ssh_file = '~/.ssh/id_rsa.pub'
     target_path = '~/.ssh/uploaded_key.pub'
     put(ssh_file, target_path)
